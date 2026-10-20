@@ -2,62 +2,51 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-# Enable CORS to allow the frontend to fetch data locally
-CORS(app)
+CORS(app) # Frontend ko backend se connect karne ke liye
 
-# Hardcoded mock properties for prototype
-PROPERTIES = [
+# Seminar ke liye Realistic Mock Data
+properties_data = [
     {
         "id": 1,
-        "title": "Luxury Sea-View Apartment",
-        "location": "Worli, Mumbai",
-        "price": "₹6.5 Cr",
+        "title": "Luxury 3BHK Apartment",
+        "location": "Bhubaneswar, Odisha",
+        "price": "₹80 Lakh",
         "bhk": 3,
-        "area": "1,850 sqft",
-        "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "area": "1500 sqft",
+        "type": "Buy",
+        "image": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80"
     },
     {
         "id": 2,
-        "title": "Modern Portuguese Villa",
-        "location": "Assagao, Goa",
-        "price": "₹12.2 Cr",
-        "bhk": 4,
-        "area": "4,200 sqft",
-        "image": "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "title": "Modern Studio Rent",
+        "location": "Andheri, Mumbai",
+        "price": "₹35,000/month",
+        "bhk": 1,
+        "area": "600 sqft",
+        "type": "Rent",
+        "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80"
     },
     {
         "id": 3,
-        "title": "Smart Tech Penthouse",
-        "location": "Whitefield, Bengaluru",
-        "price": "₹4.8 Cr",
+        "title": "Sea-View Villa",
+        "location": "Goa, India",
+        "price": "₹2.5 Crore",
         "bhk": 4,
-        "area": "2,400 sqft",
-        "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "id": 4,
-        "title": "Eco-Friendly Golf Estate",
-        "location": "Golf Course Ext, Gurugram",
-        "price": "₹8.9 Cr",
-        "bhk": 5,
-        "area": "3,600 sqft",
-        "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "id": 5,
-        "title": "Heritage City Condo",
-        "location": "Banjara Hills, Hyderabad",
-        "price": "₹3.2 Cr",
-        "bhk": 2,
-        "area": "1,350 sqft",
-        "image": "https://images.unsplash.com/photo-1502672260266-1c1e5240980c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "area": "3200 sqft",
+        "type": "Buy",
+        "image": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80"
     }
 ]
 
-@app.route('/api/properties', methods=['GET'])
-def get_properties():
-    return jsonify(PROPERTIES)
+@app.route('/api/recommendations', methods=['GET'])
+def get_recommendations():
+    # Yeh API frontend ko ghar recommend karegi
+    return jsonify({
+        "status": "success",
+        "message": "AI Recommendations loaded",
+        "data": properties_data
+    })
 
 if __name__ == '__main__':
-    # Runs the app locally on port 5000
+    print("EstateAI Backend Server is running on port 5000...")
     app.run(debug=True, port=5000)
