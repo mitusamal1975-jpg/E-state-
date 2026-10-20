@@ -5,128 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EstateAI - Find Your Dream Property</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Theme Colors -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        emerald: '#059669',
-                        gold: '#D4AF37',
-                        beige: '#FDFBF7'
-                    }
+                    colors: { emerald: '#10b981', gold: '#fbbf24', beige: '#fdfbf7' }
                 }
             }
         }
     </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #FDFBF7; }
-        .hero-bg {
-            background: linear-gradient(rgba(5, 150, 105, 0.8), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2075&q=80') center/cover;
-        }
-    </style>
 </head>
-<body class="antialiased text-gray-800">
-
+<body class="bg-beige font-sans">
     <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b-4 border-emerald py-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            <div class="flex items-center">
-                <span class="text-3xl font-extrabold text-emerald tracking-tight">Estate<span class="text-gold">AI</span></span>
-            </div>
-            <div class="space-x-4">
-                <button class="text-emerald font-semibold hover:text-gold transition duration-300">Login</button>
-                <button class="bg-emerald text-white px-5 py-2 rounded-lg font-semibold hover:bg-gold transition duration-300 shadow-md">Add Property</button>
-            </div>
+    <nav class="bg-white shadow-md p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-emerald-600">EstateAI</h1>
+        <div>
+            <button class="px-4 py-2 text-emerald-600 font-semibold hover:text-emerald-800">Login</button>
+            <button class="px-4 py-2 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 shadow-md">Add Property</button>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-bg text-white py-24 px-4 text-center">
-        <h1 class="text-5xl md:text-6xl font-bold mb-6 tracking-tight">Find Your Dream Property with <span class="text-gold">AI</span></h1>
-        <p class="text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light">Let our intelligent AI algorithms match you with the perfect home based on your lifestyle, budget, and preferences.</p>
+    <header class="text-center py-20 bg-emerald-50">
+        <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Find Your Dream Property with <span class="text-emerald-600">AI</span></h2>
+        <p class="text-gray-600 mb-8 max-w-xl mx-auto">Let our smart AI engine recommend the perfect home based on your lifestyle, budget, and location.</p>
         
         <!-- Smart Search Bar -->
-        <div class="max-w-4xl mx-auto bg-white p-3 rounded-full shadow-lg flex flex-col md:flex-row items-center space-y-2 md:space-y-0">
-            <input type="text" placeholder="e.g. 3BHK in Mumbai under ₹80 lakh..." class="w-full flex-grow px-6 py-3 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald">
-            <button class="w-full md:w-auto bg-gold text-white px-8 py-3 rounded-full font-bold hover:bg-emerald transition duration-300 whitespace-nowrap">Smart Search</button>
-        </div>
-    </section>
-
-    <!-- Top AI Recommendations -->
-    <section class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-end mb-10">
-            <div>
-                <h2 class="text-3xl font-bold text-gray-900 border-l-4 border-gold pl-3">Top AI Recommendations</h2>
-                <p class="text-gray-500 mt-2">Curated just for you based on current market trends.</p>
+        <div class="flex justify-center px-4">
+            <div class="flex bg-white rounded-full shadow-lg p-2 max-w-3xl w-full">
+                <input type="text" placeholder="e.g. 3BHK in Bhubaneswar under ₹80 lakh..." class="w-full px-6 py-2 rounded-l-full outline-none">
+                <button onclick="fetchProperties()" class="bg-emerald-600 text-white px-8 py-2 rounded-full font-bold hover:bg-gold transition">Search</button>
             </div>
         </div>
+    </header>
 
-        <!-- Properties Grid -->
-        <div id="properties-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Loading State -->
-            <div id="loading-state" class="col-span-full text-center py-12">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald mx-auto mb-4"></div>
-                <p class="text-gray-500">EstateAI is fetching the best properties for you...</p>
-            </div>
+    <!-- AI Recommendations Section -->
+    <main class="max-w-6xl mx-auto p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-800">✨ AI Top Recommendations</h3>
         </div>
-    </section>
+        
+        <!-- Property Cards Container -->
+        <div id="property-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <p class="text-gray-500">Click Search to load AI recommended properties...</p>
+        </div>
+    </main>
 
+    <!-- JavaScript to connect Backend -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const grid = document.getElementById('properties-grid');
+        async function fetchProperties() {
+            const grid = document.getElementById('property-grid');
+            grid.innerHTML = '<p class="text-emerald-600 font-bold">AI is analyzing properties...</p>';
             
-            fetch('http://localhost:5000/api/properties')
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(properties => {
-                    grid.innerHTML = ''; // Clear loading state
-                    
-                    if (properties.length === 0) {
-                        grid.innerHTML = '<p class="col-span-full text-center text-gray-500 py-10">No properties found at the moment.</p>';
-                        return;
-                    }
-
-                    properties.forEach(prop => {
-                        const card = document.createElement('div');
-                        card.className = "bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col";
-                        card.innerHTML = `
-                            <div class="relative h-56">
-                                <img src="${prop.image}" alt="${prop.title}" class="w-full h-full object-cover">
-                                <span class="absolute top-4 left-4 bg-emerald text-white px-3 py-1 text-sm font-bold rounded-full shadow">AI Match 98%</span>
-                            </div>
-                            <div class="p-6 flex-grow flex flex-col justify-between">
-                                <div>
-                                    <h3 class="text-xl font-bold text-gray-900 mb-1">${prop.title}</h3>
-                                    <p class="text-gray-500 mb-4 flex items-center">
-                                        <svg class="w-4 h-4 mr-1 text-gold" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-                                        ${prop.location}
-                                    </p>
-                                    <div class="flex flex-wrap gap-2 mb-4">
-                                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-md text-sm font-medium border border-gray-200">${prop.bhk} BHK</span>
-                                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-md text-sm font-medium border border-gray-200">${prop.area}</span>
-                                    </div>
+            try {
+                // Fetching data from our Python Flask Backend
+                const response = await fetch('http://localhost:5000/api/recommendations');
+                const result = await response.json();
+                
+                grid.innerHTML = ''; // Clear loading text
+                
+                result.data.forEach(property => {
+                    const card = `
+                        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition transform hover:-translate-y-1">
+                            <img src="${property.image}" alt="${property.title}" class="w-full h-48 object-cover">
+                            <div class="p-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-bold">${property.type}</span>
+                                    <h4 class="text-gold font-bold text-lg">${property.price}</h4>
                                 </div>
-                                <div class="flex items-center justify-between mt-4 border-t pt-4">
-                                    <span class="text-2xl font-extrabold text-emerald">${prop.price}</span>
-                                    <button class="bg-gold text-white px-4 py-2 rounded-lg font-semibold hover:bg-emerald transition duration-300 shadow">Schedule Visit</button>
+                                <h3 class="text-xl font-bold text-gray-800 mb-1">${property.title}</h3>
+                                <p class="text-gray-500 text-sm mb-4">📍 ${property.location}</p>
+                                <div class="flex justify-between border-t pt-4 text-sm text-gray-600">
+                                    <span>🛏️ ${property.bhk} BHK</span>
+                                    <span>📐 ${property.area}</span>
                                 </div>
+                                <button class="w-full mt-4 bg-emerald-600 text-white py-2 rounded-lg font-bold hover:bg-emerald-700">Schedule Visit</button>
                             </div>
-                        `;
-                        grid.appendChild(card);
-                    });
-                })
-                .catch(error => {
-                    grid.innerHTML = `
-                        <div class="col-span-full text-center py-12 bg-red-50 rounded-xl border border-red-100">
-                            <h3 class="text-xl font-bold text-red-600 mb-2">Backend Connection Required</h3>
-                            <p class="text-red-500">Please make sure the Flask backend (app.py) is running on http://localhost:5000</p>
                         </div>
                     `;
-                    console.error('Error fetching properties:', error);
+                    grid.innerHTML += card;
                 });
-        });
+            } catch (error) {
+                grid.innerHTML = `<p class="text-red-500">Error: Make sure your Python backend (app.py) is running!</p>`;
+            }
+        }
     </script>
 </body>
 </html>
